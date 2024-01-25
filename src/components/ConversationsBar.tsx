@@ -2,8 +2,8 @@ import { useState } from "react";
 import { Conversation } from "../types";
 import ConversationItem from "./ConversationItem";
 
-const AddIcon = () => <svg className="w-6 h-6 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-7 7V5" />
+const AddIcon = () => <svg className="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 12h14m-7 7V5" />
 </svg>
 
 interface ConversationsBarProps {
@@ -17,25 +17,25 @@ interface ConversationsBarProps {
 
 const ConversationsBar: React.FC<ConversationsBarProps> = ({conversations, currentConversationId, onNewConversation, onClickConversation, onChangeConversationName, onRemoveConversation}) => {
     return (
-        <div>
-            <aside id="default-sidebar" className="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-                <div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+            <aside id="conversations-bar" className="fixed top-0 left-0 z-40 w-52 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
+                <div className="h-full px-2 py-2 overflow-y-auto bg-gray-50 dark:bg-gray-800">
                     <ul className="space-y-2 font-medium">
-                        <li>
-                            <a onClick={onNewConversation} className="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+                        <li className="border-b border-gray-300">
+                            <button onClick={onNewConversation} className="w-full flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none
+                            hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-2 py-1 me-2 mb-2 dark:bg-gray-800 dark:text-white 
+                            dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
                                 <AddIcon />
-                                <span className="ms-3">New</span>
-                            </a>
+                                <span className="ms-1">New Conversation</span>
+                            </button>
                         </li>
                         {conversations.map((conversation: Conversation) => (
-                            <li>
+                            <li key={conversation.id} className="text-sm">
                                 <ConversationItem active={currentConversationId == conversation.id} conversation={conversation} onClickConv={onClickConversation} onRemove={onRemoveConversation} onChangeName={onChangeConversationName} />
                             </li>
                         ))}
                     </ul>
                 </div>
             </aside>
-        </div>
     )
 }
 

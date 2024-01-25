@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import './App.css'
-import { Conversation } from './types'
+import { Conversation, DataSource, DataSourceType } from './types'
 import HeadBar from './components/HeadBar'
 import ConversationsBar from './components/ConversationsBar'
 import DatasourcesBar from './components/DatasourcesBar'
@@ -9,9 +9,10 @@ import ChatArea from './components/ChatArea'
 function App() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [currentConversationId, setCurrentConversationId] = useState<number>(0)
+  const [datasources, setDatasources] = useState<DataSource[]>([])
 
   const createNewConversation = () => {
-    const newId = conversations[conversations.length - 1].id + 1;
+    const newId = conversations.length == 0 ? 0 : conversations[conversations.length - 1].id + 1;
     setConversations([...conversations, {
       id: newId,
       name: `Conversation ${newId}`,
@@ -23,12 +24,16 @@ function App() {
 
   useEffect(() => {
     createNewConversation()
-  })
+  }, [])
 
-  const _conversation = conversations.filter((conversation: Conversation) => conversation.id == currentConversationId)
-  const currentConversation = _conversation.length > 0 ? _conversation[0] : null;
+  const findConversationById = (id: number) => {
+    const filtered = conversations.filter((conversation: Conversation) => conversation.id == id)
+    return filtered.length > 0 ? filtered[0] : null;
+  }
 
-  const onClearConversation = () => {
+  const currentConversation = findConversationById(currentConversationId)
+
+  const clearConversation = () => {
     setConversations(conversations.map((conversation: Conversation) => {
       if (conversation.id == currentConversationId) {
         return {
@@ -41,13 +46,47 @@ function App() {
     }))
   }
 
+  const changeConversationName = (convId: number, newName: string) => {
+    setConversations(conversations.map((conversation: Conversation) => (
+      conversation.id == convId ? {
+        ...conversation,
+        name: newName
+      } : conversation
+    )))
+  }
+
+  const removeConversation = (convId: number) => {
+    setConversations(conversations.filter((conversation: Conversation) => conversation.id != convId))
+  }
+
+  const findDatasourceByName = (name: string) => {
+    const filtered = datasources.filter((datasource: DataSource) => datasource.name == name)
+    return filtered.length > 0 ? filtered[0] : null;
+  }
+
+  const changeDatasource = (newDatasourceName: string, newDatasourceType: DataSourceType) => {
+    const datasource = findDatasourceByName(newDatasourceName)
+    if (!datasource) return
+    setConversations(conversations.map((conversation: Conversation) => (
+      conversation.id == currentConversationId ? {
+        ...conversation,
+        datasource: datasource,
+        datasourceType: newDatasourceType
+      } : conversation
+    )))
+  }
+
   return (
-    <>
-      <HeadBar title={currentConversation?.name || ''} onClearConversation={onClearConversation}></HeadBar>
-      <ConversationsBar ></ConversationsBar>
-      <DatasourcesBar></DatasourcesBar>
-      <ChatArea></ChatArea>
-    </>
+    <div className='h-screen'>
+      <div className='flex flex-col h-full'>
+        <HeadBar title={currentConversation?.name || ''} onClearConversation={clearConversation}></HeadBar>
+        <ChatArea conversation={currentConversation}></ChatArea>
+      </div>
+      <ConversationsBar conversations={conversations} currentConversationId={currentConversationId} onNewConversation={createNewConversation}
+        onClickConversation={setCurrentConversationId} onChangeConversationName={changeConversationName} onRemoveConversation={removeConversation}></ConversationsBar>
+      <DatasourcesBar datasources={datasources} selectedDatasourceName={currentConversation?.datasource?.name || ''}
+        selectedDatasourceType={currentConversation?.datasourceType || 'summary'} onChangeDataSource={changeDatasource}></DatasourcesBar>
+    </div>
   )
 }
 
