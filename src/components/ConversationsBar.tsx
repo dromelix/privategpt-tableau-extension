@@ -19,10 +19,10 @@ const ConversationsBar: React.FC<ConversationsBarProps> = ({conversations, curre
     return (
             <aside id="conversations-bar" className="fixed top-0 left-0 z-40 w-52 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
                 <div className="h-full px-2 py-2 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-                    <ul className="space-y-2 font-medium">
-                        <li className="border-b border-gray-300">
+                    <ul className="space-y-0 font-medium">
+                        <li className="border-b border-gray-300 mb-1">
                             <button onClick={onNewConversation} className="w-full flex items-center text-gray-900 bg-white border border-gray-300 focus:outline-none
-                            hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-2 py-1 me-2 mb-2 dark:bg-gray-800 dark:text-white 
+                            hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-md text-sm px-2 py-1 me-2 mb-1 dark:bg-gray-800 dark:text-white 
                             dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
                                 <AddIcon />
                                 <span className="ms-1">New Conversation</span>

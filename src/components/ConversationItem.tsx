@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Conversation } from "../types"
 
-const ChatIcon = () => <svg className="w-5 h-5 min-w-5 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+const ChatIcon = () => <svg className="w-4 h-4 min-w-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
     <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7.6 8.5h8m-8 3.5H12m7.1-7H5c-.2 0-.5 0-.6.3-.2.1-.3.3-.3.6V15c0 .3 0 .5.3.6.1.2.4.3.6.3h4l3 4 3-4h4.1c.2 0 .5 0 .6-.3.2-.1.3-.3.3-.6V6c0-.3 0-.5-.3-.6a.9.9 0 0 0-.6-.3Z" />
 </svg>
 
@@ -28,7 +28,7 @@ interface ConversationItemInterface {
     active: boolean;
 }
 
-const ConversationItem: React.FC<ConversationItemInterface> = ({ conversation, onClickConv, onChangeName, onRemove }) => {
+const ConversationItem: React.FC<ConversationItemInterface> = ({ conversation, onClickConv, onChangeName, onRemove, active }) => {
     const [editMode, setEditMode] = useState<boolean>(false);
     const [editName, setEditName] = useState<string>('');
 
@@ -52,13 +52,14 @@ const ConversationItem: React.FC<ConversationItemInterface> = ({ conversation, o
     }
 
     return (
-        <div onClick={() => onClickConv(conversation.id)} className="flex px-0 items-center text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+        <div onClick={() => onClickConv(conversation.id)} className={"flex px-1 py-1 items-center rounded-sm text-gray-900 dark:text-white hover:bg-gray-200 " +
+        "dark:hover:bg-gray-700 group " + (active ? 'bg-gray-200' : '')}>
             <ChatIcon />
             {editMode ? (
                 <>
                     <input type="text" value={editName} onChange={(e) => setEditName(e.target.value)}
-                    className="w-full mx-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block
-                    p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
+                    className="w-full mx-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-gray-500 focus:border-gray-500 block
+                    p-1 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-500 dark:focus:border-gray-500" 
                     placeholder="Conversation Name" required></input>
                     <button type="button" onClick={onCheckEdit} className="inline-flex items-center p-0 mr-1 text-sm text-gray-500 rounded-lg hover:bg-gray-100 
                     focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">

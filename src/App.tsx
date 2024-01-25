@@ -9,7 +9,11 @@ import ChatArea from './components/ChatArea'
 function App() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [currentConversationId, setCurrentConversationId] = useState<number>(0)
-  const [datasources, setDatasources] = useState<DataSource[]>([])
+  const [datasources, setDatasources] = useState<DataSource[]>([
+    {name: 'Tableau'},
+    {name: 'Extension'},
+    {name: 'Running'},
+  ])
 
   const createNewConversation = () => {
     const newId = conversations.length == 0 ? 0 : conversations[conversations.length - 1].id + 1;
@@ -19,7 +23,7 @@ function App() {
       messages: [],
       datasourceType: 'summary'
     }])
-    setCurrentConversationId(currentConversationId)
+    setCurrentConversationId(newId)
   }
 
   useEffect(() => {
