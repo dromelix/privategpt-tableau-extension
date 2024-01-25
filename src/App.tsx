@@ -8,7 +8,7 @@ import ChatArea from './components/ChatArea'
 
 function App() {
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const [currentConversationId, setCurrentConversationId] = useState<number>(0)
+  const [currentConversationId, setCurrentConversationId] = useState<number>(1)
   const [datasources, setDatasources] = useState<DataSource[]>([
     {name: 'Tableau'},
     {name: 'Extension'},
@@ -16,7 +16,7 @@ function App() {
   ])
 
   const createNewConversation = () => {
-    const newId = conversations.length == 0 ? 0 : conversations[conversations.length - 1].id + 1;
+    const newId = conversations.length == 0 ? 1 : conversations[conversations.length - 1].id + 1;
     setConversations([...conversations, {
       id: newId,
       name: `Conversation ${newId}`,
@@ -82,7 +82,7 @@ function App() {
 
   return (
     <>
-      <div className='h-screen lg:pl-52 lg:pr-48 w-screen flex flex-col h-screen'>
+      <div className='h-screen lg:pl-52 w-screen flex flex-col h-screen'>
         <HeadBar title={currentConversation?.name || ''} onClearConversation={clearConversation}></HeadBar>
         <ChatArea conversation={currentConversation}></ChatArea>
       </div>
