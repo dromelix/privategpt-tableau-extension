@@ -8,7 +8,7 @@ import ChatArea from './components/ChatArea'
 
 function App() {
   const [conversations, setConversations] = useState<Conversation[]>([])
-  const [currentConversation, setCurrentConversation] = useState<number>(0)
+  const [currentConversationId, setCurrentConversationId] = useState<number>(0)
 
   const createNewConversation = () => {
     const newId = conversations[conversations.length - 1].id + 1;
@@ -18,16 +18,33 @@ function App() {
       messages: [],
       datasourceType: 'summary'
     }])
+    setCurrentConversationId(currentConversationId)
   }
 
   useEffect(() => {
     createNewConversation()
   })
 
+  const _conversation = conversations.filter((conversation: Conversation) => conversation.id == currentConversationId)
+  const currentConversation = _conversation.length > 0 ? _conversation[0] : null;
+
+  const onClearConversation = () => {
+    setConversations(conversations.map((conversation: Conversation) => {
+      if (conversation.id == currentConversationId) {
+        return {
+          ...conversation,
+          messages: []
+        }
+      } else {
+        return conversation
+      }
+    }))
+  }
+
   return (
     <>
-      <HeadBar></HeadBar>
-      <ConversationsBar></ConversationsBar>
+      <HeadBar title={currentConversation?.name || ''} onClearConversation={onClearConversation}></HeadBar>
+      <ConversationsBar ></ConversationsBar>
       <DatasourcesBar></DatasourcesBar>
       <ChatArea></ChatArea>
     </>
