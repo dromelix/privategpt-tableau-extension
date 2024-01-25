@@ -81,8 +81,8 @@ function App() {
   }
 
   return (
-    <div className='h-screen'>
-      <div className='flex flex-col h-full'>
+    <>
+      <div className='h-screen lg:pl-52 lg:pr-48 w-screen flex flex-col h-screen'>
         <HeadBar title={currentConversation?.name || ''} onClearConversation={clearConversation}></HeadBar>
         <ChatArea conversation={currentConversation}></ChatArea>
       </div>
@@ -90,7 +90,7 @@ function App() {
         onClickConversation={setCurrentConversationId} onChangeConversationName={changeConversationName} onRemoveConversation={removeConversation}></ConversationsBar>
       <DatasourcesBar datasources={datasources} selectedDatasourceName={currentConversation?.datasource?.name || ''}
         selectedDatasourceType={currentConversation?.datasourceType || 'summary'} onChangeDataSource={changeDatasource}></DatasourcesBar>
-    </div>
+    </>
   )
 }
 

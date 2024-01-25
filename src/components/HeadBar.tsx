@@ -18,21 +18,29 @@ interface HeadBarProps {
 const HeadBar: React.FC<HeadBarProps> = ({title, onClearConversation}) => {
     return (
         <div className="flex px-1 items-center bg-gray-100 w-full">
-            <button data-drawer-target="conversations-bar" data-drawer-toggle="conversations-bar" aria-controls="conversations-bar" type="button"
-            className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+            <button id="conversations-bar-toggler" data-drawer-target="conversations-bar" data-drawer-toggle="conversations-bar" aria-controls="conversations-bar" type="button"
+             className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 
+              focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                 <span className="sr-only">Open conversations bar</span>
                 <SideBarIcon />
             </button>
             <div className="flex-1">
                 {title}
             </div>
-            <button type="button" onClick={onClearConversation} className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+            <button type="button" onClick={onClearConversation} 
+              className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 
+               dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                 <ClearIcon/>
             </button>
-            <button data-drawer-target="datasources-bar" data-drawer-toggle="datasources-bar" aria-controls="datasources-bar" type="button" className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+            <button data-popover-target="popover-click" data-popover-trigger="click" type="button" data-popover-offset="0"
+             className="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2
+              focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
                 <span className="sr-only">Open datasources bar</span>
                 <DatasourcesIcon />
             </button>
+            {/* <button data-popover-target="popover-click" data-popover-trigger="click" type="button" 
+            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 
+            text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Click popover</button> */}
         </div>
     )
 }
