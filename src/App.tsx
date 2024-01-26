@@ -6,7 +6,7 @@ import ConversationsBar from './components/ConversationsBar'
 import DatasourcesBar from './components/DatasourcesBar'
 import ChatArea from './components/ChatArea'
 import { getTableauSheetNames, getTableauSheetData } from './tableau-utils.js'
-const { tableau, API_URL } = window;
+const { tableau, API_URL, SYSTEM_PROMPT } = window;
 
 
 const fixedApiUrl = API_URL.replace(/\/+$/, '') + '/v1'
@@ -35,7 +35,7 @@ function App() {
       messages: [
         {
           role: 'system',
-          content: `Answer to user's questions`
+          content: SYSTEM_PROMPT
         },
       ],
       datasourceType: 'summary'
