@@ -35,7 +35,7 @@ const ConversationsBar: React.FC<ConversationsBarProps> = ({ conversations, curr
                             </button>
                         </li>
                         {conversations.map((conversation: Conversation) => (
-                            <li key={conversation.id} className="text-sm">
+                            <li key={'conversation-' + conversation.id} className="text-sm">
                                 <ConversationItem active={currentConversationId == conversation.id} conversation={conversation} 
                                 onClickConv={(v: any) => {closeSideBar(); onClickConversation(v)}} onRemove={onRemoveConversation} onChangeName={onChangeConversationName} />
                             </li>
