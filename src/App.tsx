@@ -5,21 +5,24 @@ import HeadBar from './components/HeadBar'
 import ConversationsBar from './components/ConversationsBar'
 import DatasourcesBar from './components/DatasourcesBar'
 import ChatArea from './components/ChatArea'
-const {tableau} = window;
+import { getTableauSheetNames, getTableauSheetData } from './tableau-utils.js'
+const { tableau } = window;
 
 const API_URL = 'http://localhost:8001/v1'
 const ChatCompletionUrl = API_URL + '/chat/completions'
+const IngestTextUrl = API_URL + '/ingest/text'
 
 function App() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [currentConversationId, setCurrentConversationId] = useState<number>(1)
   const [datasources, setDatasources] = useState<DataSource[]>([
-    // {name: 'Tableau'},
-    // {name: 'Extension'},
-    // {name: 'Running'},
+    { name: 'Tableau' },
+    { name: 'Extension' },
+    { name: 'Running' },
   ])
   const [loadingDB, setLoadingDB] = useState<boolean>(false)
   const [loadingResponse, setLoadingResponse] = useState<boolean>(false)
+  const [docIds, setDocIds] = useState<any>({})
 
   const createNewConversation = () => {
     const newId = conversations.length == 0 ? 1 : conversations[conversations.length - 1].id + 1;
@@ -42,15 +45,9 @@ function App() {
   }, [])
 
   useEffect(() => {
-    tableau.extensions.initializeAsync().then(function () {
-      // Populate available worksheets in multiselect dropdown
-      const datasources: DataSource[] = []
-      tableau.extensions.dashboardContent.dashboard.worksheets.map(function (worksheet, index) {
-        datasources.push({name: worksheet.name})
-      })
-      setDatasources(datasources)
+    getTableauSheetNames().then((sheetNames: string[]) => {
+      setDatasources(sheetNames.map((s: string) => ({ name: s })))
     })
-
   }, [])
 
   const findConversationById = (id: number) => {
@@ -101,9 +98,37 @@ function App() {
         datasourceType: newDatasourceType
       } : conversation
     )))
+
+    const key = newDatasourceName + '-' + newDatasourceType
+    if (!docIds[key]) {
+      setLoadingDB(true)
+      getTableauSheetData(newDatasourceName, newDatasourceType).then((data: any) => {
+        fetch(IngestTextUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            file_name: key + '.txt',
+            text: data
+          })
+        }).then(resp => resp.json())
+          .then(resp => {
+            const doc_id = resp.data[0].doc_id
+            setDocIds((docIds: any) => {
+              const newIds = {...docIds}
+              newIds[key] = doc_id
+              return newIds
+            })
+            setLoadingDB(false)
+          })
+      })
+    }
   }
 
   const newUserMessage = async (message: string) => {
+    if (!currentConversation) return
     const old_messages = JSON.parse(JSON.stringify(currentConversation?.messages));
     const convId = currentConversationId;
 
@@ -121,6 +146,18 @@ function App() {
     )))
 
     setLoadingResponse(true)
+
+    console.log(docIds)
+    const docId = currentConversation.datasource ? docIds[currentConversation.datasource.name + '-' + currentConversation.datasourceType] : null
+    const contextParams = docId ? {
+      "use_context": true,
+      "context_filter": {
+        "docs_ids": [
+          docId
+        ]
+      },
+      "include_sources": false,
+    } : {}
     
     const response = await fetch(ChatCompletionUrl, {
       method: 'POST',
@@ -136,26 +173,20 @@ function App() {
             content: message
           }
         ],
-        // "use_context": true,
-        // "context_filter": {
-        //     "docs_ids": [
-        //         "41b37c67-ac5c-494e-94e9-5bcc398559e1"
-        //     ]
-        // },
-        // "include_sources": false,
+        ...contextParams,
         "stream": true
       })
     })
-    
+
     if (!response.ok || !response.body) {
       throw response.statusText;
     }
-  
+
     // Here we start prepping for the streaming response
     const reader = response.body.getReader();
     const decoder = new TextDecoder();
     const loopRunner = true;
-  
+
     while (loopRunner) {
       // Here we start reading the stream, until its done.
       const { value, done } = await reader.read();
@@ -173,17 +204,17 @@ function App() {
           chunk = JSON.parse(chunk)
           // @ts-ignore
           let answer = chunk.choices[0].delta.content
-          
+
           setConversations((conversations: Conversation[]) => conversations.map((conversation: Conversation) => {
             if (conversation.id != convId) return conversation
             const old_messages = conversation.messages
             let new_messages;
             if (old_messages.length > 0 && old_messages[old_messages.length - 1].role == 'assistant') {
-              new_messages = [...old_messages.slice(0, -1), {role: 'assistant', content: old_messages[old_messages.length - 1].content + answer}]
+              new_messages = [...old_messages.slice(0, -1), { role: 'assistant', content: old_messages[old_messages.length - 1].content + answer }]
             } else {
-              new_messages = [...old_messages, {role: 'assistant', content: answer}]
+              new_messages = [...old_messages, { role: 'assistant', content: answer }]
             }
-            return {...conversation, messages: new_messages}
+            return { ...conversation, messages: new_messages }
           }))
         }
       }
@@ -194,12 +225,12 @@ function App() {
     <>
       <div className='h-screen pl-44 w-screen flex flex-col h-screen'>
         <HeadBar title={currentConversation?.name || ''} onClearConversation={clearConversation} child={<DatasourcesBar datasources={datasources} selectedDatasourceName={currentConversation?.datasource?.name || ''}
-        selectedDatasourceType={currentConversation?.datasourceType || 'summary'} onChangeDataSource={changeDatasource}></DatasourcesBar>}></HeadBar>
+          selectedDatasourceType={currentConversation?.datasourceType || 'summary'} onChangeDataSource={changeDatasource}></DatasourcesBar>}></HeadBar>
         <ChatArea conversation={currentConversation} loading={loadingDB || loadingResponse} onNewMessage={newUserMessage}></ChatArea>
       </div>
       <ConversationsBar conversations={conversations} currentConversationId={currentConversationId} onNewConversation={createNewConversation}
         onClickConversation={setCurrentConversationId} onChangeConversationName={changeConversationName} onRemoveConversation={removeConversation}></ConversationsBar>
-      
+
     </>
   )
 }

@@ -19,7 +19,7 @@ interface HeadBarProps {
 const HeadBar: React.FC<HeadBarProps> = ({title, onClearConversation, child}) => {
     return (
         <div className="flex px-1 items-center bg-gray-100 w-full p-1">
-            <div className="flex-1 text-left pl-4">
+            <div className="flex-1 text-left pl-4 truncate">
                 {title}
             </div>
             {child}
