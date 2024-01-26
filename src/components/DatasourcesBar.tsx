@@ -16,8 +16,11 @@ const DatasourcesBar: React.FC<DatasourcesBarProps> = ({ datasources, selectedDa
         <div data-popover id="popover-click" role="tooltip"
             className="absolute z-10 invisible inline-block w-48 text-sm text-gray-500 transition-opacity duration-300 bg-white border border-gray-200 rounded-md
              shadow-sm opacity-0 dark:text-gray-400 dark:border-gray-600 dark:bg-gray-800">
+        {/* <div className="absolute top-0 right-0 z-10 inline-block w-96 text-sm text-gray-500 bg-white border border-gray-200 rounded-md shadow-sm"> */}
             <div className="h-full px-2 py-2 bg-gray-50 dark:bg-gray-800">
-                <div>
+            {/* <div className="h-full px-2 py-1 bg-gray-50 dark:bg-gray-800"> */}
+                <div className="">
+                {/* <div className="flex gap-1"> */}
                     <select onChange={onSelectDatasource} value={selectedDatasourceName}
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-gray-500 focus:border-blue-500 block w-full py-1 px-2
                           dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 mb-1">

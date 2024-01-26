@@ -25,6 +25,7 @@ const HeadBar: React.FC<HeadBarProps> = ({title, onClearConversation}) => {
                 <SideBarIcon />
             </button>
             <div className="flex-1 text-center">
+            {/* <div className="flex-1 text-left pl-4"> */}
                 {title}
             </div>
             {/* <button type="button" onClick={onClearConversation} 

@@ -5,6 +5,7 @@ import HeadBar from './components/HeadBar'
 import ConversationsBar from './components/ConversationsBar'
 import DatasourcesBar from './components/DatasourcesBar'
 import ChatArea from './components/ChatArea'
+const {tableau} = window;
 
 const API_URL = 'http://localhost:8001/v1'
 const ChatCompletionUrl = API_URL + '/chat/completions'
@@ -38,6 +39,18 @@ function App() {
 
   useEffect(() => {
     createNewConversation()
+  }, [])
+
+  useEffect(() => {
+    tableau.extensions.initializeAsync().then(function () {
+      // Populate available worksheets in multiselect dropdown
+      const datasources: DataSource[] = []
+      tableau.extensions.dashboardContent.dashboard.worksheets.map(function (worksheet, index) {
+        datasources.push({name: worksheet.name})
+      })
+      setDatasources(datasources)
+    })
+
   }, [])
 
   const findConversationById = (id: number) => {
@@ -180,6 +193,7 @@ function App() {
   return (
     <>
       <div className='h-screen lg:pl-52 w-screen flex flex-col h-screen'>
+      {/* <div className='h-screen pl-52 w-screen flex flex-col h-screen'> */}
         <HeadBar title={currentConversation?.name || ''} onClearConversation={clearConversation}></HeadBar>
         <ChatArea conversation={currentConversation} loading={loadingDB || loadingResponse} onNewMessage={newUserMessage}></ChatArea>
       </div>

@@ -23,6 +23,8 @@ const ConversationsBar: React.FC<ConversationsBarProps> = ({ conversations, curr
     return (
         <div id="conversations-bar" onClick={closeSideBar} 
          className="fixed top-0 left-0 z-40 w-screen lg:w-52 h-screen transition-transform -translate-x-full lg:translate-x-0 bg-gray-500 bg-opacity-50" aria-label="Sidebar">
+        {/* <div
+         className="fixed top-0 left-0 z-40 w-52 h-screen bg-gray-500 bg-opacity-50" aria-label="Sidebar"> */}
             <div className="w-52 lg:w-full h-full" onClick={(e) => {e.stopPropagation()}}>
                 <div className="h-full px-2 py-2 overflow-y-auto bg-gray-50 dark:bg-gray-800">
                     <ul className="space-y-0 font-medium">
