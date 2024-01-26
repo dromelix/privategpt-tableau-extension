@@ -13,32 +13,16 @@ const ClearIcon = () => <svg className="w-5 h-5 text-gray-800 dark:text-white" a
 interface HeadBarProps {
     title: string;
     onClearConversation: any;
+    child: any;
 }
 
-const HeadBar: React.FC<HeadBarProps> = ({title, onClearConversation}) => {
+const HeadBar: React.FC<HeadBarProps> = ({title, onClearConversation, child}) => {
     return (
         <div className="flex px-1 items-center bg-gray-100 w-full p-1">
-            <button id="conversations-bar-toggler" data-drawer-target="conversations-bar" data-drawer-toggle="conversations-bar" aria-controls="conversations-bar" type="button"
-             className="inline-flex items-center p-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 
-              focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-                <span className="sr-only">Open conversations bar</span>
-                <SideBarIcon />
-            </button>
-            <div className="flex-1 text-center">
-            {/* <div className="flex-1 text-left pl-4"> */}
+            <div className="flex-1 text-left pl-4">
                 {title}
             </div>
-            {/* <button type="button" onClick={onClearConversation} 
-              className="inline-flex items-center p-1 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 
-               dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-                <ClearIcon/>
-            </button> */}
-            <button data-popover-target="popover-click" data-popover-trigger="click" type="button" data-popover-offset="2"
-             className="inline-flex items-center p-1 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2
-              focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
-                <span className="sr-only">Open datasources bar</span>
-                <DatasourcesIcon />
-            </button>
+            {child}
         </div>
     )
 }

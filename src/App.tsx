@@ -14,9 +14,9 @@ function App() {
   const [conversations, setConversations] = useState<Conversation[]>([])
   const [currentConversationId, setCurrentConversationId] = useState<number>(1)
   const [datasources, setDatasources] = useState<DataSource[]>([
-    {name: 'Tableau'},
-    {name: 'Extension'},
-    {name: 'Running'},
+    // {name: 'Tableau'},
+    // {name: 'Extension'},
+    // {name: 'Running'},
   ])
   const [loadingDB, setLoadingDB] = useState<boolean>(false)
   const [loadingResponse, setLoadingResponse] = useState<boolean>(false)
@@ -192,15 +192,14 @@ function App() {
 
   return (
     <>
-      <div className='h-screen lg:pl-52 w-screen flex flex-col h-screen'>
-      {/* <div className='h-screen pl-52 w-screen flex flex-col h-screen'> */}
-        <HeadBar title={currentConversation?.name || ''} onClearConversation={clearConversation}></HeadBar>
+      <div className='h-screen pl-44 w-screen flex flex-col h-screen'>
+        <HeadBar title={currentConversation?.name || ''} onClearConversation={clearConversation} child={<DatasourcesBar datasources={datasources} selectedDatasourceName={currentConversation?.datasource?.name || ''}
+        selectedDatasourceType={currentConversation?.datasourceType || 'summary'} onChangeDataSource={changeDatasource}></DatasourcesBar>}></HeadBar>
         <ChatArea conversation={currentConversation} loading={loadingDB || loadingResponse} onNewMessage={newUserMessage}></ChatArea>
       </div>
       <ConversationsBar conversations={conversations} currentConversationId={currentConversationId} onNewConversation={createNewConversation}
         onClickConversation={setCurrentConversationId} onChangeConversationName={changeConversationName} onRemoveConversation={removeConversation}></ConversationsBar>
-      <DatasourcesBar datasources={datasources} selectedDatasourceName={currentConversation?.datasource?.name || ''}
-        selectedDatasourceType={currentConversation?.datasourceType || 'summary'} onChangeDataSource={changeDatasource}></DatasourcesBar>
+      
     </>
   )
 }
