@@ -6,11 +6,14 @@ import ConversationsBar from './components/ConversationsBar'
 import DatasourcesBar from './components/DatasourcesBar'
 import ChatArea from './components/ChatArea'
 import { getTableauSheetNames, getTableauSheetData } from './tableau-utils.js'
-const { tableau } = window;
+const { tableau, API_URL } = window;
 
-const API_URL = 'http://localhost:8001/v1'
-const ChatCompletionUrl = API_URL + '/chat/completions'
-const IngestTextUrl = API_URL + '/ingest/text'
+
+const fixedApiUrl = API_URL.replace(/\/+$/, '') + '/v1'
+// const API_URL = 'http://localhost:8001/v1'
+console.log(fixedApiUrl)
+const ChatCompletionUrl = fixedApiUrl + '/chat/completions'
+const IngestTextUrl = fixedApiUrl + '/ingest/text'
 
 function App() {
   const [conversations, setConversations] = useState<Conversation[]>([])
