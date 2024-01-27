@@ -15,7 +15,7 @@
 poetry add transformers@latest
 - Change script/setup python script
 Add "trust_remote_code=True," before Line 46, add new paramter to AutoTokenizer.from_pretrained
-
+And before Line 28 of /private_gpt/components/llm/llm_component.py
 
 - Run PrivateGPT project
 
