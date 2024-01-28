@@ -178,7 +178,7 @@ function makeMessageElement(message) {
         }).append(
             $('<div>', {
                 class: 'p-1 px-2 rounded-md bg-gray-100 rounded-tr-none text',
-                text: message.content
+                html: message.content.replace('\n', '<br>')
             })
         )
     } else if (message.role == 'assistant') {
@@ -187,7 +187,7 @@ function makeMessageElement(message) {
         }).append(
             $('<div>', {
                 class: 'p-1 px-2 rounded-md bg-sky-50 rounded-tl-none text',
-                text: message.content
+                html: message.content.replace('\n', '<br>')
             })
         )
     }
@@ -276,7 +276,7 @@ function addAssistantChunk(chunk) {
         })
     } else {
         messages[messages.length - 1].content += chunk
-        $('#messages .message:last-child .text').append(chunk)
+        $('#messages .message:last-child .text').append(chunk.replace('\n', '<br>'))
     }
 }
 
