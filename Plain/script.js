@@ -75,34 +75,89 @@ function findConversationIndexById(id) {
 }
 
 function renderConversationList() {
+    const ChatIcon = `<svg class="w-4 h-4 min-w-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 10.5h0m-4 0h0m-4 0h0M5 5h14c.6 0 1 .4 1 1v9c0 .6-.4 1-1 1h-6.6a1 1 0 0 0-.7.3L8.8 19c-.3.3-.8 0-.8-.4V17c0-.6-.4-1-1-1H5a1 1 0 0 1-1-1V6c0-.6.4-1 1-1Z"/>
+</svg>`
     $conversationList.html('')
     conversationList.map(conv => {
+        const $edit = $('<button>', {
+            class: 'inline-flex items-center p-1 mr-0 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200',
+            html: `<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10.8 17.8-6.4 2.1 2.1-6.4m4.3 4.3L19 9a3 3 0 0 0-4-4l-8.4 8.6m4.3 4.3-4.3-4.3m2.1 2.1L15 9.1m-2.1-2 4.2 4.2"/>
+          </svg>`
+        }).click((e) => {
+            e.stopPropagation()
+            const $parent = $(e.target).closest('div')
+            const onClickEdit = (e) => {
+                e.stopPropagation()
+                const input = $(e.target).closest('div').find('input')[0]
+                const text = $(input).val()
+                if (!text) return
+                conversationList[findConversationIndexById(conv.id)].name = text
+                renderConversationList()
+            }
+            $parent.html('')
+            $parent.closest('li').removeClass('cursor-pointer')
+            $parent.closest('li').off('click')
+            $parent.append([
+                ChatIcon,
+                $('<input>', {
+                    class: 'w-full mx-1 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-gray-500 focus:border-gray-500 block p-1',
+                    placeholder: 'Conversation Name',
+                    required: true,
+                    value: conv.name,
+                }).keydown(function (event) {
+                    if (event.keyCode === 13) {
+                        onClickEdit(event)
+                    }
+                }),
+                $('<button>', {
+                    class: 'inline-flex items-center p-1 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none',
+                    html: `<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m5 12 4.7 4.5 9.3-9"/>
+                  </svg>`
+                }).click(onClickEdit),
+                $('<button>', {
+                    class: 'inline-flex items-center p-1 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200',
+                    html: `<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18 18 6m0 12L6 6"/>
+                  </svg>`
+                }).click((e) => {
+                    e.stopPropagation()
+                    renderConversationList()
+                })
+            ])
+        })
+        const $remove = $('<button>', {
+            class: 'inline-flex items-center p-1 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200',
+            html: `<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
+          </svg>`
+        }).click((e) => {
+            e.stopPropagation()
+            const index = findConversationIndexById(conv.id)
+            conversationList.splice(index, 1)
+            $(e.target).closest('li').remove()
+            if (conversationList.length == 0) {
+                addNewConversation()
+            } else {
+                if (currentConversationIndex == index) {
+                    setCurrentConversationIndex(0)
+                }
+            }
+        })
         $conversationList.append(
             $('<li>', { class: 'text-sm cursor-pointer' }).append([
                 $('<div>', {
                     class: "flex px-1 py-1 items-center rounded-sm text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 group",
                 }).append([
-                    `<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 10.5h0m-4 0h0m-4 0h0M5 5h14c.6 0 1 .4 1 1v9c0 .6-.4 1-1 1h-6.6a1 1 0 0 0-.7.3L8.8 19c-.3.3-.8 0-.8-.4V17c0-.6-.4-1-1-1H5a1 1 0 0 1-1-1V6c0-.6.4-1 1-1Z"/>
-                    </svg>`,
+                    ChatIcon,
                     $('<span>', {
                         class: "mx-1 truncate flex-1",
                         text: conv.name
                     }),
-                    $('<button>', {
-                        class: 'inline-flex items-center p-1 mr-0 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200',
-                        html: `<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m10.8 17.8-6.4 2.1 2.1-6.4m4.3 4.3L19 9a3 3 0 0 0-4-4l-8.4 8.6m4.3 4.3-4.3-4.3m2.1 2.1L15 9.1m-2.1-2 4.2 4.2"/>
-                      </svg>`
-                    }).click(() => {
-                        console.log('edit')
-                    }),
-                    $('<button>', {
-                        class: 'inline-flex items-center p-1 text-sm text-gray-500 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200',
-                        html: `<svg class="w-4 h-4 text-gray-800 dark:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 7h14m-9 3v8m4-8v8M10 3h4a1 1 0 0 1 1 1v3H9V4a1 1 0 0 1 1-1ZM6 7h12v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V7Z"/>
-                      </svg>`
-                    })
+                    $edit,
+                    $remove,
                 ])
             ]).click(() => setCurrentConversationIndex(findConversationIndexById(conv.id)))
         )
@@ -279,7 +334,7 @@ function changeConvDatasource(datasourceIndex, datasourceType) {
                 data: formData,
                 processData: false,
                 contentType: false,
-            })    
+            })
         } else {
             ajaxRequest = $.ajax({
                 url: IngestTextUrl,
