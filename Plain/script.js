@@ -1,6 +1,6 @@
-var TableauTestMode = true;
-var CSVTabSplitter = true;
-var IngestFile = false;
+var TableauTestMode = false;
+var CSVTabSplitter = false;
+var IngestFile = true;
 
 var conversationList = []
 var conversationCounter = 0;
@@ -324,7 +324,7 @@ function changeConvDatasource(datasourceIndex, datasourceType) {
     getTableauSheetData(datasource.name, conv_datasource.type).then(data => {
         let ajaxRequest;
         if (IngestFile) {
-            const blob = new Blob([data], { type: 'text/plain' });
+            const blob = new Blob([data], { type: 'text/csv' });
             const formData = new FormData();
             formData.append('file', blob, datasource.name + '_' + conv_datasource.type + '.csv');
 
